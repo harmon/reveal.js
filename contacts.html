@@ -1,0 +1,12 @@
+<div class="contacts panel col-lg-12" ng-controller="ContactsController">
+    <div ng-controller="ContactsListController" ng-class="{open: myCurrentState == listStateName}" class="contact-list">
+        <div ng-include="'/contact_list.html'"></div>
+    </div>
+    <div  ng-controller="ContactDetailsController" ng-class="{open: myCurrentState == detailsStateName}" class="contact-details">
+        <div ng-include="'/contact_details.html'"></div>
+    </div>
+
+    <div ng-controller="ContactSidebarController" ng-class="{open: showSideBar}"  class="contact-sidebar">
+        <div ng-include="'/contact_sidebar.html'"></div>
+    </div>
+</div>

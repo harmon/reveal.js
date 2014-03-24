@@ -1,0 +1,63 @@
+.main {
+	width: 700px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.panel {
+	background-color: #EEE;
+	margin: 20px auto;
+
+}
+.contacts {
+	overflow: hidden;
+	height: 400px;
+
+}
+.contact-list {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	/*background-color: #999;*/
+	transition: all 1s linear;
+	opacity: 0;
+
+}
+
+.contact-list.open {
+	opacity: 1;
+}
+
+.contact-details {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: -100%;
+	width: 100%;
+	transition: all 1s linear;
+	background-color: #DDD;
+	z-index: 100;
+}
+
+.contact-details.open {
+	display: block;
+	right: 0;
+}
+
+.contact-sidebar {
+	color: white;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: 200px;
+	background-color: #0C1021;
+	transition: all 1s linear;
+	z-index: 101;
+	padding: 10px;
+}
+
+.contact-sidebar.open {
+	right: -301px;
+}
