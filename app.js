@@ -1,4 +1,4 @@
-app = angular.module('contacts', ['ui.router'])
+app = window.app = angular.module('contacts', ['ui.router'])
 
 app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     // $locationProvider.html5Mode(true);
@@ -10,12 +10,22 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
             url: '/contacts',
             templateUrl: 'contacts.html'
         }).state('contacts.list', {
-            url: '/list'
+            url: '/list',
+            views: {
+                'tips@contacts': {
+                    template: "<h1>Fact: Party People</h1>"
+                }
+            }
         })
         .state('contacts.details', {
-            url: '/details'
+            url: '/details',
+            views: {
+                'tips@contacts': {
+                    template: "<h1>Fact: Tears it up on the dancefloor!</h1>"
+                }
+            }
         })
-    $urlRouterProvider.otherwise('/contacts/list')
+    $urlRouterProvider.otherwise('/beer/list')
     console.log("wow")
 });
 
@@ -57,4 +67,19 @@ app.controller('ContactDetailsController', function ($scope) {
 });
 app.controller('ContactSidebarController', function ($scope) {
     $scope.header = 'Contacts';
+});
+
+app.controller('BeerController', function ($scope) {
+    $scope.tips = 'Everyone loves beer!';
+    $scope.setTips = function (tips) {
+        $scope.tips = tips;
+    }
+});
+
+app.controller('BeerListController', function ($scope) {
+    $scope.setTips('Here are some popular beers.');
+});
+
+app.controller('BeerDetailsController', function ($scope) {
+    $scope.setTips('The US no longer owns all the beer!');
 });
