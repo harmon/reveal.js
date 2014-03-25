@@ -50,11 +50,25 @@
 						<small>Created by <a href="http://krypticus.com">Adam Grant</a></small>
 					</p>
 				</section>
+                <section>
+                    <h2>Problems with Angular Router</h2>
+                    <br/>
+                    <br/>
+                    <ul>
+                        <li>Single view - nesting is a PITA!</li>
+                        <br/>
+                        <li>Updating page "widgets" requires shared scope or service</li>
+                        <br/>
+                        <li>Checking for ancestry on route change is difficult (Regex?)</li>
+                    </ul>
+                </section>
 				<section>
-					<h2>Why so awesome?</h2>
+					<h2>Why is UI-Router awesome?</h2>
 					<ul>
 						<li>Multiple views</li>
+                        <br/>
 						<li>Nestable states</li>
+                        <br/>
 						<li>Views ~ States != 1:1</li>
 
 					</ul>
@@ -65,26 +79,6 @@
 						<li>Views ~ States != 1:1  -- Any state can redefine any part of the page</li>
 					</ul>
 
-					</aside>
-				</section>
-				<section>
-					<h3>$stateProvider</h3>
-					<ul>
-						<li>A "state" is a place in the UI/Nav</li>
-						<br/>
-						<li>Describes how the UI looks and acts via Controller, Template, View properties</li>
-						<br/>
-						<li>State hierarchy: parent-child / nested states</li>
-					</ul>
-
-					<aside class="notes">
-						<ul>
-							<li>A state corresponds to a "place" in the application in terms of the overall UI and navigation.</li>
-							<br/>
-							<li>A state describes (via the controller / template / view properties) what the UI looks like and does at that place.</li>
-							<br/>
-							<li>States often have things in common, and the primary way of factoring out these commonalities in this model is via the state hierarchy, i.e. parent/child states aka nested states.</li>
-						</ul>
 					</aside>
 				</section>
 				<section>
@@ -126,25 +120,44 @@
 
 					</ul>
 				</section>
+                <section>
+                    <h3>$stateProvider</h3>
+                    <ul>
+                        <li>A "state" is a place in the UI/Nav</li>
+                        <br/>
+                        <li>Describes how the UI looks and acts via Controller, Template, View properties</li>
+                        <br/>
+                        <li>State hierarchy: parent-child / nested states</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>A state corresponds to a "place" in the application in terms of the overall UI and navigation.</li>
+                            <br/>
+                            <li>A state describes (via the controller / template / view properties) what the UI looks like and does at that place.</li>
+                            <br/>
+                            <li>States often have things in common, and the primary way of factoring out these commonalities in this model is via the state hierarchy, i.e. parent/child states aka nested states.</li>
+                        </ul>
+                    </aside>
+                </section>
 				<section>
 					<h2>I like my state rare</h2>
-					<pre><code>
-$stateProvider.state("contacts", {
-  template:   '<h1>{{title}}</h1>',
-  controller: function ($scope, $state, myTitle) {
-    $scope.title    = myTitle;
-    $scope.division = $state.current.data.division;
-    $scope.segment  = $state.current.data.segment;
-  },
-  resolve: { myTitle: 'My Contacts' },
-  data: {
-    division: "HR",
-    segment:  "Compensation"
-  }
-  onEnter: function (myTitle) { if (myTitle) {...} },
-  onExit:  function (myTitle) { if (myTitle) {...} }
-})
-					</code></pre>
+					<pre><code>app.config(function ($stateProvider) {
+  $stateProvider.state("contacts", {
+    template:   '<h1>{{title}}</h1>',
+    controller: function ($scope, $state, myTitle) {
+      $scope.title    = myTitle;
+      $scope.division = $state.current.data.division;
+      $scope.segment  = $state.current.data.segment;
+    },
+    resolve: { myTitle: 'My Contacts' },
+    data: {
+      division: "HR",
+      segment:  "Compensation"
+    }
+    onEnter: function (myTitle) { if (myTitle) {...} },
+    onExit:  function (myTitle) { if (myTitle) {...} }
+  })</code></pre>
 				</section>
                 <section>
                     <h2>Handy Events</h2>
@@ -158,12 +171,29 @@ $stateProvider.state("contacts", {
                     </ul>
                 </section>
                 <section>
+                    <h2>Event Handling</h2>
+                    <pre><code>
+$scope.$on('$stateChangeSuccess',
+    function (event, toState, toParams, fromState, fromParams) {
+        $scope.changeSomeShit(toState);
+    }
+)
+$scope.$on('$stateChangeError',
+    function (event, toState, toParams, fromState, fromParams) {
+        alert("You be crazy: ", fromState.name)
+    }
+)
+
+                    </code></pre>
+                </section>
+                <section>
                     <h2>Nesting</h2>
                     <p>Child states denoted by a "."</p>
                     <pre><code>
 $stateProvider
   .state('contacts', {})
   .state('contacts.list', {});
+  .state('contacts.list.treeview', {});
                     </code></pre>
                     <p>or</p>
                     <pre><code>
@@ -178,8 +208,7 @@ $stateProvider
                 <section>
                     <h2>What gets inherited?</h2>
                     <p>Children inherit: data, resolve</p>
-                    <pre><code>
-$stateProvider.state('parent', {
+                    <pre><code>$stateProvider.state('parent', {
   resolve:{
     resA:  function(){ return {'value': 'A'}; }
   },
@@ -204,7 +233,7 @@ $stateProvider.state('parent', {
 $stateProvider
     .state('contacts', {
         abstract: true,
-        url: '/contacts',              // Not actually Navigable!x
+        url: '/contacts',              // Not actually Navigable!
         template: '&lt;ui-view/&gt;',
         controller: 'ContactsController'
     })
@@ -228,8 +257,7 @@ $stateProvider
 &lt;/body&gt;
                     </code></pre>
 
-                    <pre><code>
-$stateProvider
+                    <pre><code>$stateProvider
   .state('contacts', {
     views: {
       'sidebar': {
@@ -249,25 +277,22 @@ $stateProvider
                 </section>
                 <section>
                     <h2>Nesting Craziness!</h2>
-                    <pre><code>
-$stateProvider
+                    <pre><code>$stateProvider
   .state('contacts.detail', {
     views: {
       'sidebar@contacts': {                   // Modifies parent sidebar UI
         templateUrl: 'contacts/sidebar.html', // at (ui-view=sidebar)
         controller: 'DetailSideBarController'
       },
-      '': {                                   // Nests inside of contacts.html
-        templateUrl: 'contacts/detail.html',
+      '': {                                   // Nests inside of
+        templateUrl: 'contacts/detail.html',  // contacts.html
         controller: 'ContactsDetailController'
       },
       'footer@': {                            // Another way to replace
         templateUrl: 'contacts/footer.html'   // the top-level footer
       }                                       // (ui-view=footer)
     }
-  })
-
-                    </code></pre>
+  })</code></pre>
                     <p>Use the "@" sign to target ui-views in other states</p>
                     <p>Something like "nameOfUiView@" will target top level state's template</p>
                 </section>
@@ -328,6 +353,11 @@ url: '/users/:id/details/{type}/{repeat:[0-9]+}?from&to'
                     <p>IMPORTANT: $stateParams gives you access to the params for only the child state
                         you are on, and NO parent state params.
                     </p>
+                    <pre><code>
+app.controller('MyController', function ($scope, $stateParams) {
+    $scope.params = $stateParams;
+})
+                    </code></pre>
                 </section>
                 <section>
                     <h2>Url Router</h2>
@@ -354,8 +384,7 @@ url: '/users/:id/details/{type}/{repeat:[0-9]+}?from&to'
         }
         // Because we've returned nothing, no state change occurs
     });
-})
-                    </code></pre>
+})</code></pre>
                 </section>
                 <section>
                     <h2>Navigation</h2>
@@ -366,6 +395,7 @@ url: '/users/:id/details/{type}/{repeat:[0-9]+}?from&to'
                         <li>State-based routing using "ui-sref"</li>
                     </ul>
                     <pre><code>$state.go("contacts.detail", {id: 2}, {inherit:false});</code></pre>
+                    <pre><code>$state.transitionTo("contacts.detail");</code></pre>
                     <pre><code>
 &lt;div&gt;
     &lt;a href=&quot;/contacts/detail&quot;&gt;Contact Detail&lt;/a&gt;
@@ -376,6 +406,35 @@ url: '/users/:id/details/{type}/{repeat:[0-9]+}?from&to'
     &lt;/a&gt;
 &lt;/div&gt;
                     </code></pre>
+                </section>
+                <section>
+                    <h2>Sweet API</h2>
+                    <pre><code>expect($state.href("about.person", { person: "bob" }))
+  .toEqual("/about/bob");</code></pre>
+                    <pre><code>expect($state.get())
+  .toEqual([{
+    name: "assets.details.topSection",
+    url: "^/offers/:id/:topSection"
+  }]);</code></pre>
+  <pre><code>$state.$current.name = 'contacts.details.item.url';
+
+$state.includes("*.details.*.*"); // returns true
+$state.includes("*.details.**"); // returns true
+$state.includes("**.item.**"); // returns true
+$state.includes("*.details.item.url"); // returns true
+$state.includes("*.details.*.url"); // returns true
+$state.includes("*.details.*"); // returns false
+$state.includes("item.**"); // returns false
+  </code></pre>
+  <pre><code>$state.is('contact.details.item'); // returns true
+$state.is(contactDetailItemStateObject); // returns true
+  </code></pre>
+  <pre><code>//$state.reload() is just an alias for:
+
+$state.transitionTo($state.current, $stateParams, {
+  reload: true, inherit: false, notify: false
+});
+  </code></pre>
                 </section>
                 <section>
                     <h2>Hackable!</h2>
