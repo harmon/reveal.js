@@ -1,6 +1,6 @@
 # Angular UI-Router Demo
 
-[Angular UI-Router Presentation (PDF)](https://github.com/harmon/reveal.js/blob/master/AngularUIRouterPresentation.pdf)
+[Angular UI-Router Presentation (PDF)](https://github.com/harmon/reveal.js/blob/master/AngularUIRouterPresentation.pdf?raw=true)
 
 * To get started, run "npm install", then "grunt serve".
 * Browse to "localhost:8000/slideshow.html" for the slideshow
